@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"mime/multipart"
@@ -138,14 +137,9 @@ func (a *uploads) uploadMediaFromReader(ctx context.Context, uploadType schemes.
 	switch result := result.(type) {
 	case *schemes.UploadedInfo:
 		// Read response body
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			fmt.Println(err)
+		if err := json.NewDecoder(resp.Body).Decode(result); err != nil {
 			return err
 		}
-		result.Token = endpoint.Token
-		// Print response body as string
-		log.Println(string(body))
 	default:
 		if err = json.NewDecoder(resp.Body).Decode(result); err != nil {
 			return err
