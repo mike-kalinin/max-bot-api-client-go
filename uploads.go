@@ -43,12 +43,12 @@ func (a *uploads) UploadMediaFromUrl(ctx context.Context, uploadType schemes.Upl
 		return nil, err
 	}
 	defer respFile.Body.Close()
-	return a.UploadMediaFromReader(ctx, uploadType, respFile.Body)
+	return a.UploadMediaFromReader(ctx, uploadType, respFile.Body, "file")
 }
 
-func (a *uploads) UploadMediaFromReader(ctx context.Context, uploadType schemes.UploadType, reader io.Reader) (*schemes.UploadedInfo, error) {
+func (a *uploads) UploadMediaFromReader(ctx context.Context, uploadType schemes.UploadType, reader io.Reader, filename string) (*schemes.UploadedInfo, error) {
 	result := new(schemes.UploadedInfo)
-	return result, a.uploadMediaFromReaderWithName(ctx, uploadType, reader, result, "file")
+	return result, a.uploadMediaFromReaderWithName(ctx, uploadType, reader, result, filename)
 }
 
 // UploadPhotoFromFile uploads photos to Max server
@@ -81,9 +81,9 @@ func (a *uploads) UploadPhotoFromUrl(ctx context.Context, url string) (*schemes.
 }
 
 // UploadPhotoFromReader uploads photo from reader
-func (a *uploads) UploadPhotoFromReader(ctx context.Context, reader io.Reader) (*schemes.PhotoTokens, error) {
+func (a *uploads) UploadPhotoFromReader(ctx context.Context, reader io.Reader, filename string) (*schemes.PhotoTokens, error) {
 	result := new(schemes.PhotoTokens)
-	return result, a.uploadMediaFromReaderWithName(ctx, schemes.PHOTO, reader, result, "file")
+	return result, a.uploadMediaFromReaderWithName(ctx, schemes.PHOTO, reader, result, filename)
 }
 
 func (a *uploads) getUploadURL(ctx context.Context, uploadType schemes.UploadType) (*schemes.UploadEndpoint, error) {
